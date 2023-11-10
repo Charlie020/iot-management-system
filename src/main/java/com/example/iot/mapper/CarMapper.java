@@ -9,7 +9,7 @@ import java.util.List;
 
 @Mapper
 public interface CarMapper extends BaseMapper<Car> {
-    @Select("select * from communityCar")
+    @Select("select * from communityCar, communityPerson where carOwnerID=personID")
     @Results(
             {
                     @Result(column = "carID", property = "carID"),
@@ -22,7 +22,7 @@ public interface CarMapper extends BaseMapper<Car> {
     )
     List<Car> findAll();
 
-    @Select("select * from communityCar where carID=#{carID}")
+    @Select("select * from communityCar, communityPerson where carOwnerID=personID and carID=#{carID}")
     @Results(
             {
                     @Result(column = "carID", property = "carID"),

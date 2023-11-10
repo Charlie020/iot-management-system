@@ -5,6 +5,10 @@ import com.example.iot.mapper.PersonMapper;
 import com.example.iot.utils.ResultCode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.File;
+import java.io.IOException;
 import java.util.List;
 import java.util.Objects;
 
@@ -32,7 +36,16 @@ public class PersonController {
     }
 
     @PostMapping
-    public Integer addPerson(@RequestBody Person person) {
+    public Integer addPerson(Person person) {
+        MultipartFile photo = person.getPhoto();
+        String path = "/usr/personFace/" + person.getpersonID() + ".jpg";
+//        String path = "C:\\Users\\25803\\Desktop\\" + person.getpersonID() + ".jpg";
+        try {
+            saveFile(photo, path);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        person.setpersonFace(path);
         personMapper.addPerson(person);
         return ResultCode.SUCCESS;
     }
@@ -41,5 +54,10 @@ public class PersonController {
     public Integer delPerson(@RequestBody Person person) {
         personMapper.delPerson(person.getpersonID());
         return ResultCode.SUCCESS;
+    }
+
+    public void saveFile(MultipartFile photo, String path) throws IOException {
+        File file = new File(path);
+        photo.transferTo(file);
     }
 }

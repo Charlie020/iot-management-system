@@ -1,6 +1,7 @@
 package com.example.iot.entity;
 
 import com.baomidou.mybatisplus.annotation.TableName;
+import org.springframework.web.multipart.MultipartFile;
 
 @TableName("communityPerson")
 public class Person {
@@ -10,6 +11,15 @@ public class Person {
     private String personType;
     private String personFace;
     private String personCreateTime;
+    private MultipartFile photo;
+
+    public MultipartFile getPhoto() {
+        return photo;
+    }
+
+    public void setPhoto(MultipartFile photo) {
+        this.photo = photo;
+    }
 
     public String getpersonID() {
         return personID;

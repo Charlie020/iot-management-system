@@ -49,4 +49,15 @@ public class Car {
     public void setcarOwnerID(String carOwnerID) {
         this.carOwnerID = carOwnerID;
     }
+
+    @Override
+    public String toString() {
+        return "Car{" +
+                "carID='" + carID + '\'' +
+                ", carType='" + carType + '\'' +
+                ", carIsRegistered='" + carIsRegistered + '\'' +
+                ", carOwnerID='" + carOwnerID + '\'' +
+                ", person=" + person +
+                '}';
+    }
 }
