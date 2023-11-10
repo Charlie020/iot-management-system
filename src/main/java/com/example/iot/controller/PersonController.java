@@ -2,6 +2,7 @@ package com.example.iot.controller;
 
 import com.example.iot.entity.Person;
 import com.example.iot.mapper.PersonMapper;
+import com.example.iot.utils.Result;
 import com.example.iot.utils.ResultCode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -37,27 +38,31 @@ public class PersonController {
 
     @PostMapping
     public Integer addPerson(Person person) {
-        MultipartFile photo = person.getPhoto();
-        String path = "/usr/personFace/" + person.getpersonID() + ".jpg";
-//        String path = "C:\\Users\\25803\\Desktop\\" + person.getpersonID() + ".jpg";
+        personMapper.addPerson(person);
+        return ResultCode.SUCCESS;
+    }
+
+    @PostMapping("/upload")
+    public Result addPersonFace(MultipartFile photo) {
+        Result result = new Result();
+//        String path = "/usr/personFace/" + photo.getOriginalFilename();
+        String path = "C:\\Users\\25803\\Desktop\\" + photo.getOriginalFilename();
+        File file = new File(path);
         try {
-            saveFile(photo, path);
+            photo.transferTo(file);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        person.setpersonFace(path);
-        personMapper.addPerson(person);
-        return ResultCode.SUCCESS;
+        result.setSuccess(true);
+        result.setCode(20000);
+        result.setMessage("成功");
+        result.data("url", path);
+        return result;
     }
 
     @DeleteMapping
     public Integer delPerson(@RequestBody Person person) {
         personMapper.delPerson(person.getpersonID());
         return ResultCode.SUCCESS;
-    }
-
-    public void saveFile(MultipartFile photo, String path) throws IOException {
-        File file = new File(path);
-        photo.transferTo(file);
     }
 }

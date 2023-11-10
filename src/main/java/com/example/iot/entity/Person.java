@@ -11,15 +11,6 @@ public class Person {
     private String personType;
     private String personFace;
     private String personCreateTime;
-    private MultipartFile photo;
-
-    public MultipartFile getPhoto() {
-        return photo;
-    }
-
-    public void setPhoto(MultipartFile photo) {
-        this.photo = photo;
-    }
 
     public String getpersonID() {
         return personID;
