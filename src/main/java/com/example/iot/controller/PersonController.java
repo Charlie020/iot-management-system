@@ -37,7 +37,7 @@ public class PersonController {
     }
 
     @PostMapping
-    public Integer addPerson(Person person) {
+    public Integer addPerson(@RequestBody Person person) {
         personMapper.addPerson(person);
         return ResultCode.SUCCESS;
     }
