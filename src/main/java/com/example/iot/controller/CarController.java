@@ -35,19 +35,19 @@ public class CarController {
     public Result addCar(@RequestBody Car car) {
         Result result = new Result();
         if (personMapper.findPersonByID(car.getcarOwnerID()).isEmpty()) {
-            result.setCode(20001);
+            result.setCode(ResultCode.ERROR);
             result.setMessage("未在小区业主中找到该车辆的拥有者！");
         } else if (car.getcarID().length() != 7) {
-            result.setCode(20001);
+            result.setCode(ResultCode.ERROR);
             result.setMessage("车牌号位数错误，应为7位！");
         } else if (car.getcarType().isEmpty() || (!Objects.equals(car.getcarType(), "1") && !Objects.equals(car.getcarType(), "2"))) {
-            result.setCode(20001);
+            result.setCode(ResultCode.ERROR);
             result.setMessage("车辆类型错误！");
         } else if (car.getcarIsRegistered().isEmpty() || (!Objects.equals(car.getcarIsRegistered(), "1") && !Objects.equals(car.getcarIsRegistered(), "0"))) {
-            result.setCode(20001);
+            result.setCode(ResultCode.ERROR);
             result.setMessage("车辆登记类型错误！");
         } else {
-            result.setCode(20000);
+            result.setCode(ResultCode.ERROR);
             result.setMessage("添加成功！");
             carMapper.addCar(car);
         }
