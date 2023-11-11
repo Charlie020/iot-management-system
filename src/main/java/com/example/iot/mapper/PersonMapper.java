@@ -18,6 +18,9 @@ public interface PersonMapper {
     @Select("select * from communityPerson where personType=#{personType}")
     List<Person> findPersonByType(String personType);
 
+    @Select("select * from communityPerson where personPhone=#{personPhone}")
+    List<Person> findPersonByPhone(String personPhone);
+
     @Select("select * from communityPerson where personName=#{personName} and personType=#{personType}")
     List<Person> findPersonByNameAndType(@Param("personName") String personName, @Param("personType") String personType);
 
