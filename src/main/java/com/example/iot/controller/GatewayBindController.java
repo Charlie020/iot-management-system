@@ -20,6 +20,11 @@ public class GatewayBindController {
                                                        @RequestParam(value = "personName", required = false) String personName,
                                                        @RequestParam(value = "gatewayEquipmentID", required = false) String gatewayEquipmentIDtmp) {
         List<GatewayBind> gatewayBindList;
+        // 判断是否有传值
+        if (gatewayEquipmentName == null) gatewayEquipmentName = "";
+        if (personName == null) personName = "";
+        if (gatewayEquipmentIDtmp == null) gatewayEquipmentIDtmp = "";
+
         int gatewayEquipmentID;
         if (Objects.equals(gatewayEquipmentIDtmp, "")) {
             gatewayEquipmentID = 0;

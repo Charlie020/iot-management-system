@@ -24,6 +24,9 @@ public class PersonController {
     public List<Person> findPerson(@RequestParam(value = "personName", required = false) String personName,
                                    @RequestParam(value = "personType", required = false) String personType) {
         List<Person> personList;
+        if (personName == null) personName = "";
+        if (personType == null) personType = "";
+
         if (Objects.equals(personName, "") && Objects.equals(personType, "")) {
             personList = personMapper.findAll();
         } else if (Objects.equals(personName, "")) {
@@ -40,16 +43,24 @@ public class PersonController {
     public Result addPerson(@RequestBody Person person) {
         Result result = new Result();
         if (person.getpersonID().length() != 18) {
+            result.setSuccess(false);
             result.setCode(ResultCode.ERROR);
             result.setMessage("身份证号位数错误！");
         } else if (!personMapper.findPersonByID(person.getpersonID()).isEmpty()) {
+            result.setSuccess(false);
             result.setCode(ResultCode.ERROR);
             result.setMessage("身份证号已存在！");
+        } else if (person.getpersonPhone().isEmpty()) {
+            result.setSuccess(false);
+            result.setCode(ResultCode.ERROR);
+            result.setMessage("请填写手机号！");
         } else if (!personMapper.findPersonByPhone(person.getpersonPhone()).isEmpty()) {
+            result.setSuccess(false);
             result.setCode(ResultCode.ERROR);
             result.setMessage("电话号码已存在！");
         } else {
             personMapper.addPerson(person);
+            result.setSuccess(true);
             result.setCode(ResultCode.SUCCESS);
             result.setMessage("插入成功！");
         }
@@ -77,13 +88,19 @@ public class PersonController {
     @DeleteMapping
     public Result delPerson(@RequestBody Person person) {
         Result result = new Result();
-        if (personMapper.findPersonByID(person.getpersonID()).isEmpty()) {
+        if (person.getpersonID().isEmpty()) {
+            result.setSuccess(false);
+            result.setCode(ResultCode.ERROR);
+            result.setMessage("请填写身份证号！");
+        } else if (personMapper.findPersonByID(person.getpersonID()).isEmpty()) {
+            result.setSuccess(false);
             result.setCode(ResultCode.ERROR);
             result.setMessage("系统中未找到该人，无法删除！");
         } else {
+            personMapper.delPerson(person.getpersonID());
+            result.setSuccess(true);
             result.setCode(ResultCode.SUCCESS);
             result.setMessage("删除成功！");
-            personMapper.delPerson(person.getpersonID());
         }
         return result;
     }

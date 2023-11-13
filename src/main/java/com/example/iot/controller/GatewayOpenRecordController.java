@@ -20,6 +20,10 @@ public class GatewayOpenRecordController {
                                                          @RequestParam(value = "personName", required = false) String personName,
                                                          @RequestParam(value = "gatewayEquipmentID", required = false) String gatewayEquipmentIDtmp) {
         List<GatewayOpenRecord> gatewayOpenRecordList;
+        if (gatewayEquipmentName == null) gatewayEquipmentName = "";
+        if (personName == null) personName = "";
+        if (gatewayEquipmentIDtmp == null) gatewayEquipmentIDtmp = "";
+
         int gatewayEquipmentID;
         if (Objects.equals(gatewayEquipmentIDtmp, "")) {
             gatewayEquipmentID = 0;

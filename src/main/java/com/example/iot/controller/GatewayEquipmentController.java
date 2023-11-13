@@ -2,6 +2,7 @@ package com.example.iot.controller;
 
 import com.example.iot.entity.GatewayEquipment;
 import com.example.iot.mapper.GatewayEquipmentMapper;
+import com.example.iot.utils.Result;
 import com.example.iot.utils.ResultCode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -21,6 +22,10 @@ public class GatewayEquipmentController {
                                                        @RequestParam(value = "gatewayEquipmentIP", required = false) String gatewayEquipmentIP,
                                                        @RequestParam(value = "gatewayEquipmentMacAddress", required = false) String gatewayEquipmentMacAddress) {
         List<GatewayEquipment> gatewayEquipmentList;
+        if (gatewayEquipmentIDtmp == null) gatewayEquipmentIDtmp = "";
+        if (gatewayEquipmentIP == null) gatewayEquipmentIP = "";
+        if (gatewayEquipmentMacAddress == null) gatewayEquipmentMacAddress = "";
+
         int gatewayEquipmentID;
         if (Objects.equals(gatewayEquipmentIDtmp, "")) {
             gatewayEquipmentID = 0;
@@ -56,14 +61,58 @@ public class GatewayEquipmentController {
     }
 
     @PostMapping
-    public Integer addGatewayEquipment(@RequestBody GatewayEquipment gatewayEquipment) {
-        gatewayEquipmentMapper.addGatewayEquipment(gatewayEquipment);
-        return ResultCode.SUCCESS;
+    public Result addGatewayEquipment(@RequestBody GatewayEquipment gatewayEquipment) {
+        Result result = new Result();
+        if (gatewayEquipment.getGatewayEquipmentName().isEmpty()) {
+            result.setSuccess(false);
+            result.setCode(ResultCode.ERROR);
+            result.setMessage("请填写门禁名称!");
+        } else if (gatewayEquipment.getGatewayEquipmentIP().isEmpty()) {
+            result.setSuccess(false);
+            result.setCode(ResultCode.ERROR);
+            result.setMessage("请填写门禁IP!");
+        } else if (gatewayEquipment.getGatewayEquipmentIPVersion().isEmpty()) {
+            result.setSuccess(false);
+            result.setCode(ResultCode.ERROR);
+            result.setMessage("请填写门禁的IP版本!");
+        } else if (gatewayEquipment.getGatewayEquipmentMacAddress().isEmpty()) {
+            result.setSuccess(false);
+            result.setCode(ResultCode.ERROR);
+            result.setMessage("请填写门禁的Mac地址!");
+        } else if (gatewayEquipment.getGatewayEquipmentBrand().isEmpty()) {
+            result.setSuccess(false);
+            result.setCode(ResultCode.ERROR);
+            result.setMessage("请填写门禁厂商!");
+        } else if (!gatewayEquipmentMapper.findGEByName(gatewayEquipment.getGatewayEquipmentName()).isEmpty()) {
+            result.setSuccess(false);
+            result.setCode(ResultCode.ERROR);
+            result.setMessage("门禁设备名称重复!");
+        } else {
+            gatewayEquipmentMapper.addGatewayEquipment(gatewayEquipment);
+            result.setSuccess(true);
+            result.setCode(ResultCode.SUCCESS);
+            result.setMessage("插入成功!");
+        }
+        return result;
     }
 
     @DeleteMapping
-    public Integer delGatewayEquipment(@RequestBody GatewayEquipment gatewayEquipment) {
-        gatewayEquipmentMapper.delGatewayEquipment(gatewayEquipment.getGatewayEquipmentID());
-        return ResultCode.SUCCESS;
+    public Result delGatewayEquipment(@RequestBody GatewayEquipment gatewayEquipment) {
+        Result result = new Result();
+        if (gatewayEquipment.getGatewayEquipmentName().isEmpty()) {
+            result.setSuccess(false);
+            result.setCode(ResultCode.ERROR);
+            result.setMessage("请填写门禁名称!");
+        } else if (gatewayEquipmentMapper.findGEByName(gatewayEquipment.getGatewayEquipmentName()).isEmpty()) {
+            result.setSuccess(false);
+            result.setCode(ResultCode.ERROR);
+            result.setMessage("门禁设备不存在！");
+        } else {
+            gatewayEquipmentMapper.delGatewayEquipment(gatewayEquipment.getGatewayEquipmentID());
+            result.setSuccess(true);
+            result.setCode(ResultCode.SUCCESS);
+            result.setMessage("删除成功！");
+        }
+        return result;
     }
 }

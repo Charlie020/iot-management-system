@@ -25,6 +25,7 @@ public class ParkingSpaceController {
     @GetMapping
     public List<ParkingSpace> findParkingSpace(@RequestParam(value = "parkingSpaceID", required = false) String parkingSpaceID) {
         List<ParkingSpace> parkingSpaceList;
+        if (parkingSpaceID == null) parkingSpaceID = "";
         if (Objects.equals(parkingSpaceID, "")) {
             parkingSpaceList = parkingSpaceMapper.findAll();
         } else {
@@ -36,26 +37,52 @@ public class ParkingSpaceController {
     @PostMapping
     public Result addParkingSpace(@RequestBody ParkingSpace parkingSpace) {
         Result result = new Result();
-        if (parkingLotMapper.findParkingLotByID(parkingSpace.getparkingSpaceParkingLotID()).isEmpty()) {
+        if (parkingSpace.getparkingSpaceID().isEmpty()) {
+            result.setSuccess(false);
+            result.setCode(ResultCode.ERROR);
+            result.setMessage("请填写停车位ID！");
+        } else if (parkingSpace.getparkingSpaceParkingLotID().isEmpty()) {
+            result.setSuccess(false);
+            result.setCode(ResultCode.ERROR);
+            result.setMessage("请填写所属停车场ID！");
+        } else if (parkingSpace.getparkingSpaceCarID().isEmpty()) {
+            result.setSuccess(false);
+            result.setCode(ResultCode.ERROR);
+            result.setMessage("请填写该停车位所停车辆的车牌号！");
+        } else if (parkingLotMapper.findParkingLotByID(parkingSpace.getparkingSpaceParkingLotID()).isEmpty()) {
+            result.setSuccess(false);
+            result.setCode(ResultCode.ERROR);
             result.setMessage("所属停车场不存在！");
-            result.setCode(ResultCode.ERROR);
         } else if (!parkingSpaceMapper.findByparkingSpaceID(parkingSpace.getparkingSpaceID()).isEmpty()) {
+            result.setSuccess(false);
+            result.setCode(ResultCode.ERROR);
             result.setMessage("停车位已存在！");
-            result.setCode(ResultCode.ERROR);
         } else if (carMapper.findCarByID(parkingSpace.getparkingSpaceCarID()).isEmpty()) {
-            result.setMessage("小区中不存在该车辆！");
+            result.setSuccess(false);
             result.setCode(ResultCode.ERROR);
+            result.setMessage("小区中不存在该车辆！");
         } else {
-            result.setMessage("插入成功！");
-            result.setCode(ResultCode.SUCCESS);
             parkingSpaceMapper.addParkingSpace(parkingSpace);
+            result.setSuccess(true);
+            result.setCode(ResultCode.SUCCESS);
+            result.setMessage("插入成功！");
         }
         return result;
     }
 
     @DeleteMapping
-    public Integer delParkingSpace(@RequestBody ParkingSpace parkingSpace) {
-        parkingSpaceMapper.delParkingSpace(parkingSpace.getparkingSpaceID());
-        return ResultCode.SUCCESS;
+    public Result delParkingSpace(@RequestBody ParkingSpace parkingSpace) {
+        Result result = new Result();
+        if (parkingSpaceMapper.findByparkingSpaceID(parkingSpace.getparkingSpaceID()).isEmpty()) {
+            result.setSuccess(false);
+            result.setCode(ResultCode.ERROR);
+            result.setMessage("需要删除的停车位不存在！");
+        } else {
+            parkingSpaceMapper.delParkingSpace(parkingSpace.getparkingSpaceID());
+            result.setSuccess(true);
+            result.setCode(ResultCode.SUCCESS);
+            result.setMessage("删除成功！");
+        }
+        return result;
     }
 }

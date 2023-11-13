@@ -20,6 +20,10 @@ public class GatewayOperateController {
                                                    @RequestParam(value = "gatewayOperateID", required = false) String gatewayOperateIDtmp,
                                                    @RequestParam(value = "gatewayOperateGatewayEquipmentID", required = false) String gatewayOperateGatewayEquipmentIDtmp) {
         List<GatewayOperate> gatewayOperateList;
+        if (gatewayEquipmentName == null) gatewayEquipmentName = "";
+        if (gatewayOperateIDtmp == null) gatewayOperateIDtmp = "";
+        if (gatewayOperateGatewayEquipmentIDtmp == null) gatewayOperateGatewayEquipmentIDtmp = "";
+
         int gatewayOperateID;
         if (Objects.equals(gatewayOperateIDtmp, "")) {
             gatewayOperateID = 0;
